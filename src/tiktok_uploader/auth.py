@@ -1,7 +1,10 @@
 """Handles authentication for TikTokUploader"""
 from http import cookiejar
 from time import time, sleep
+from typing import Callable, Any
 
+import selenium.webdriver
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 
 from selenium.webdriver.support.ui import WebDriverWait
@@ -112,7 +115,9 @@ class AuthBackend:
         return return_cookies
 
 
-def login_accounts(driver=None, accounts=[(None, None)], *args, **kwargs) -> list:
+def login_accounts(
+    driver=None, accounts=[(None, None)], *args, headless: bool = False, captcha_solver: Callable[[Any], None] | None = None, **kwargs,
+) -> list:
     """
     Authenticates the accounts using the browser backend and saves the required credentials
 
@@ -120,18 +125,18 @@ def login_accounts(driver=None, accounts=[(None, None)], *args, **kwargs) -> lis
     - driver -> the webdriver to use
     - accounts -> a list of tuples of the form (username, password)
     """
-    driver = driver or get_browser(headless=False, *args, **kwargs)
+    driver = driver or get_browser(headless=headless, *args, **kwargs)
 
     cookies = {}
     for account in accounts:
         username, password = get_username_and_password(account)
 
-        cookies[username] = login(driver, username, password)
+        cookies[username] = login(driver, username, password, captcha_solver=captcha_solver)
 
     return cookies
 
 
-def login(driver, username: str, password: str):
+def login(driver, username: str, password: str, captcha_solver: Callable[[Any], None] | None = None):
     """
     Logs in the user using the email and password
     """
@@ -164,7 +169,14 @@ def login(driver, username: str, password: str):
     submit = driver.find_element(By.XPATH, config['selectors']['login']['login_button'])
     submit.click()
 
-    print(f'Complete the captcha for {username}')
+    try:
+        WebDriverWait(driver, config['implicit_wait']).until(
+            EC.presence_of_element_located((By.XPATH, config['selectors']['login']['captcha_container']))
+        )
+        captcha_solver(driver)
+        logger.info(green(f"{username} captcha solved"))
+    except TimeoutException:
+        logger.info(green(f"{username} captcha not found"))
 
     # Wait until the session id cookie is set
     start_time = time()

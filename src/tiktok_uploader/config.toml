@@ -30,6 +30,7 @@ user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 	username_field = "//input[@name=\"username\"]"
 	password_field = "//input[@type=\"password\"]"
 	login_button = "//button[@type=\"submit\"]"
+	captcha_container = "//div[contains(@class, 'captcha-verify-container')]"
 	
 	alert_user_if_failed = true # sends an alert and waits instead of failing
 	
@@ -49,13 +50,14 @@ user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 	options = ["Public", "Friends", "Private"]
 
 	mention_box = "//div[contains(@class, 'mention-list-popover')]"
+	mention_hashtag = "(//*[contains(@class, 'hash-tag-topic')])[1]"
 	mention_box_user_id = "//span[contains(@class, 'user-id')]"
 
 	comment = "//label[.='Comment']/following-sibling::div/input"
 	duet = "//label[.='Duet']/following-sibling::div/input"
 	stitch = "//label[.='Stitch']/following-sibling::div/input"
 
-	post = "//button[contains(@class, 'TUXButton--primary')]"
+	post = "//button[@data-e2e='post_video_button']"
 	post_confirmation = "//div[contains(text(), 'Your video has been uploaded')]"
 
 

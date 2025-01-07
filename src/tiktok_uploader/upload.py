@@ -268,7 +268,7 @@ def complete_upload_form(
 
     if not skip_split_window:
         _remove_split_window(driver)
-    _set_interactivity(driver, **kwargs)
+    # _set_interactivity(driver, **kwargs)
     _set_description(driver, description)
     if schedule:
         _set_schedule_video(driver, schedule)
@@ -372,7 +372,12 @@ def _set_description(driver, description: str) -> None:
                         (By.XPATH, config["selectors"]["upload"]["mention_box"])
                     )
                 )
-                desc.send_keys(Keys.ENTER)
+                WebDriverWait(driver, config["implicit_wait"]).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, config["selectors"]["upload"]["mention_hashtag"]),
+                    ),
+                )
+                driver.find_element(By.XPATH, config["selectors"]["upload"]["mention_hashtag"]).click()
             elif word[0] == "@":
                 logger.debug(green("- Adding Mention: " + word))
                 desc.send_keys(word)
@@ -466,11 +471,11 @@ def _set_video(driver, path: str = "", num_retries: int = 3, **kwargs) -> None:
             )
             upload_box.send_keys(path)
 
-            # wait until a non-draggable image is found
-            process_confirmation = EC.presence_of_element_located(
-                (By.XPATH, config["selectors"]["upload"]["process_confirmation"])
-            )
-            WebDriverWait(driver, config["explicit_wait"]).until(process_confirmation)
+            # # wait until a non-draggable image is found
+            # process_confirmation = EC.presence_of_element_located(
+            #     (By.XPATH, config["selectors"]["upload"]["process_confirmation"])
+            # )
+            # WebDriverWait(driver, config["implicit_wait"]).until(process_confirmation)
             return
         except TimeoutException as exception:
             print("TimeoutException occurred:\n", exception)
