@@ -56,7 +56,7 @@ user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 	comment = "//label[.='Comment']/following-sibling::div/input"
 	duet = "//label[.='Duet']/following-sibling::div/input"
 	stitch = "//label[.='Stitch']/following-sibling::div/input"
-
+	allow_all_button = "//button[text()='Allow all']"
 	post = "//button[@data-e2e='post_video_button']"
 	post_confirmation = "//div[contains(text(), 'Your video has been uploaded')]"
 
