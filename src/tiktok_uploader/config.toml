@@ -76,6 +76,7 @@ user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 	timepicker_hours = "//span[contains(@class, 'tiktok-timepicker-left')]"
 	timepicker_minutes = "//span[contains(@class, 'tiktok-timepicker-right')]"
 
-	[selectors.upload.cookies_banner]
-		banner = "tiktok-cookie-banner"
-		button = "div.button-wrapper"
+	[selectors.upload.cookies]
+		root = "tiktok-cookie-banner"
+		selector = "button"
+		text = "Allow all"

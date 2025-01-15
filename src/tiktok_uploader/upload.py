@@ -250,7 +250,7 @@ def complete_upload_form(
         The path to the video to upload
     """
     _go_to_upload(driver)
-    #  _remove_cookies_window(driver)
+    _remove_cookies_window(driver)
 
     upload_complete_event = threading.Event()
 
@@ -273,7 +273,6 @@ def complete_upload_form(
     if schedule:
         _set_schedule_video(driver, schedule)
     _post_video(driver)
-
 
 def _go_to_upload(driver) -> None:
     """
@@ -493,28 +492,18 @@ def _remove_cookies_window(driver) -> None:
     driver : selenium.webdriver
     """
 
-    logger.debug(green(f"Removing cookies window"))
-    cookies_banner = WebDriverWait(driver, config["implicit_wait"]).until(
-        EC.presence_of_element_located(
-            (By.TAG_NAME, config["selectors"]["upload"]["cookies_banner"]["banner"])
-        )
-    )
-
-    item = WebDriverWait(driver, config["implicit_wait"]).until(
-        EC.visibility_of(
-            cookies_banner.shadow_root.find_element(
-                By.CSS_SELECTOR,
-                config["selectors"]["upload"]["cookies_banner"]["button"],
+    try:
+        driver.execute_script(
+            "return Array.from(document.getElementsByTagName('%s')[0].shadowRoot."
+            "querySelectorAll('%s')).find(el => el.textContent.includes('%s'))" % (
+                config['selectors']['upload']['cookies']["root"],
+                config['selectors']['upload']['cookies']["selector"],
+                config['selectors']['upload']['cookies']["text"],
             )
-        )
-    )
-
-    # Wait that the Decline all button is clickable
-    decline_button = WebDriverWait(driver, config["implicit_wait"]).until(
-        EC.element_to_be_clickable(item.find_elements(By.TAG_NAME, "button")[0])
-    )
-
-    decline_button.click()
+        ).click()
+        logger.info(green(f"cookies accepted"))
+    except TimeoutException:
+        logger.info(green(f"cookies acceptance button not found"))
 
 
 def _remove_split_window(driver) -> None:
@@ -740,7 +729,6 @@ def __verify_time_picked_is_correct(driver, hour: int, minute: int):
             f"but got {time_selected_hour:02d}:{time_selected_minute:02d}"
         )
         raise Exception(msg)
-
 
 def _post_video(driver) -> None:
     """

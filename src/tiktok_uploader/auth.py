@@ -135,7 +135,6 @@ def login_accounts(
 
     return cookies
 
-
 def login(driver, username: str, password: str, captcha_solver: Callable[[Any], None] | None = None):
     """
     Logs in the user using the email and password
@@ -187,6 +186,14 @@ def login(driver, username: str, password: str, captcha_solver: Callable[[Any], 
 
     # wait until the url changes
     WebDriverWait(driver, config['explicit_wait']).until(EC.url_changes(config['paths']['login']))
+
+    try:
+        WebDriverWait(driver, config['implicit_wait']).until(
+            EC.presence_of_element_located((By.XPATH, config['selectors']['login']['captcha_container']))
+        )
+        logger.info(green(f"{username} captcha solved"))
+    except TimeoutException:
+        logger.info(green(f"{username} captcha not found"))
 
     return driver.get_cookies()
 
