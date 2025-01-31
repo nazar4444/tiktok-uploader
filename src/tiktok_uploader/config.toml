@@ -17,7 +17,7 @@ supported_file_types = ["mp4", "mov", "avi", "wmv", "flv", "webm", "mkv", "m4v",
 max_description_length = 150 # characters
 
 [paths]
-main = "https://www.tiktok.com/"
+#main = "https://www.tiktok.com/"
 login = "https://www.tiktok.com/login/phone-or-email/email"
 upload = "https://www.tiktok.com/creator-center/upload?lang=en"
 

@@ -67,7 +67,7 @@ class AuthBackend:
 
         logger.debug(green("Authenticating browser with cookies"))
 
-        driver.get(config['paths']['main'])
+        # driver.get(config['paths']['main'])
 
         WebDriverWait(driver, config['explicit_wait']).until(EC.title_contains("TikTok"))
 
@@ -140,15 +140,6 @@ def login(driver, username: str, password: str, captcha_solver: Callable[[Any], 
     Logs in the user using the email and password
     """
     assert username and password, "Username and password are required"
-
-    # checks if the browser is on TikTok
-    if not config['paths']['main'] in driver.current_url:
-        driver.get(config['paths']['main'])
-
-    # checks if the user is already logged in
-    if driver.get_cookie(config['selectors']['login']['cookie_of_interest']):
-        # clears the existing cookies
-        driver.delete_all_cookies()
 
     # goes to the login site
     driver.get(config['paths']['login'])

@@ -493,6 +493,9 @@ def _remove_cookies_window(driver) -> None:
     """
 
     try:
+        WebDriverWait(driver, config["implicit_wait"]).until(
+            EC.presence_of_element_located((By.TAG_NAME, config['selectors']['upload']['cookies']["root"])),
+        )
         driver.execute_script(
             "return Array.from(document.getElementsByTagName('%s')[0].shadowRoot."
             "querySelectorAll('%s')).find(el => el.textContent.includes('%s'))" % (
